@@ -1,0 +1,36 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id         String      @id @db.Uuid
+  email      String      @unique
+  fullName   String?     @map("full_name")
+  role       String      @default("customer")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  documents  Document[]
+
+  @@map("profiles")
+}
+
+model Document {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  fileUrl    String    @map("file_url")
+  fileName   String?   @map("file_name")
+  fileType   String?   @map("file_type")
+  fileSize   BigInt?   @map("file_size")
+  uploadedAt DateTime  @default(now()) @map("uploaded_at")
+  status     String    @default("pending")
+
+  user       Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
