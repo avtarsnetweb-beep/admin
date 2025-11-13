@@ -1,5 +1,3 @@
-// This is your Prisma schema file
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,28 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Profile {
-  id         String      @id @db.Uuid
-  email      String      @unique
-  fullName   String?     @map("full_name")
-  role       String      @default("customer")
-  createdAt  DateTime    @default(now()) @map("created_at")
-  documents  Document[]
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 
-  @@map("profiles")
+model User {
+  id          String     @id @default(uuid()) @db.Uuid
+  email       String     @unique
+  full_name   String?
+  role        String?    @default("customer")
+  created_at  DateTime   @default(now())
+
+  // 👇 Add this relation field
+  documents   Document[]
 }
 
+
+
 model Document {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId     String    @map("user_id") @db.Uuid
-  fileUrl    String    @map("file_url")
-  fileName   String?   @map("file_name")
-  fileType   String?   @map("file_type")
-  fileSize   BigInt?   @map("file_size")
-  uploadedAt DateTime  @default(now()) @map("uploaded_at")
-  status     String    @default("pending")
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @db.Uuid
+  fileUrl       String
+  cloudinaryId  String?   // 👈 new column for deletion
+  fileName      String
+  fileType      String
+  fileSize      BigInt
+  status        String    @default("pending")
+  uploadedAt    DateTime  @default(now())
 
-  user       Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("documents")
+  user          User      @relation(fields: [userId], references: [id])
 }

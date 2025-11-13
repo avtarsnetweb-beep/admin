@@ -13,7 +13,7 @@ router.get('/documents', authenticateToken, requireAdmin, async (req, res) => {
         user: {
           select: {
             email: true,
-            fullName: true,
+            full_name: true,
             role: true
           }
         }
@@ -69,13 +69,13 @@ router.patch('/documents/:id/status', authenticateToken, requireAdmin, async (re
  */
 router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const users = await prisma.profile.findMany({
+    const users = await prisma.user.findMany({
       include: {
         _count: {
           select: { documents: true }
         }
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy:  { created_at: 'desc' }
     });
 
     res.json(users);

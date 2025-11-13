@@ -31,7 +31,7 @@ export async function apiRequest(endpoint, options = {}) {
  */
 export async function uploadFile(endpoint, file) {
   const token = localStorage.getItem('access_token');
-
+ console.log("file",endpoint,file);
   const formData = new FormData();
   formData.append('document', file);
 
@@ -45,6 +45,8 @@ export async function uploadFile(endpoint, file) {
 
   const data = await response.json();
 
+  console.log("data",data);
+  
   if (!response.ok) {
     throw new Error(data.error || 'File upload failed');
   }

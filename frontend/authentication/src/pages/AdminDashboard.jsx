@@ -155,7 +155,7 @@ export function AdminDashboard() {
                         {documents.map((doc) => (
                           <tr key={doc.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{doc.user.fullName || 'N/A'}</div>
+                              <div className="text-sm text-gray-900">{doc.user.full_name || 'N/A'}</div>
                               <div className="text-sm text-gray-500">{doc.user.email}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -249,7 +249,7 @@ export function AdminDashboard() {
                         {users.map((user) => (
                           <tr key={user.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {user.fullName || 'N/A'}
+                              {user.full_name || 'N/A'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {user.email}
@@ -265,7 +265,7 @@ export function AdminDashboard() {
                               {user._count?.documents || 0}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(user.createdAt).toLocaleDateString()}
+                            {new Date(user.created_at).toLocaleString()}
                             </td>
                           </tr>
                         ))}

@@ -55,6 +55,8 @@ export function AuthProvider({ children }) {
   const loadProfile = async () => {
     try {
       const profileData = await apiRequest('/api/auth/profile');
+      console.log("profiledata",profileData);
+      
       setProfile(profileData);
     } catch (error) {
       console.error('Failed to load profile:', error);
