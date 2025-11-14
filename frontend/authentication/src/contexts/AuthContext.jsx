@@ -1,16 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { apiRequest } from '../lib/api';
+import axios from "axios";
 
 const AuthContext = createContext({});
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -31,6 +25,7 @@ export function AuthProvider({ children }) {
         setLoading(false);
       }
     });
+
 
     // Listen for auth changes
     const {
@@ -161,3 +156,12 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+};

@@ -87,7 +87,6 @@ async function attachProfile(req, res, next) {
   }
 }
 
-module.exports = { attachProfile };
 
 module.exports = {
   authenticateToken,

@@ -127,7 +127,7 @@ export function Login() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
-          <Link to="/auth/forgot-password" className="text-sm text-blue-600 hover:underline">
+          <Link to="/auth/forgot" className="text-sm text-blue-600 hover:underline">
             Forgot password?
           </Link>
           <p className="text-sm text-gray-600">

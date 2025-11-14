@@ -10,14 +10,16 @@ datasource db {
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 
 model User {
-  id          String     @id @default(uuid()) @db.Uuid
-  email       String     @unique
-  full_name   String?
-  role        String?    @default("customer")
-  created_at  DateTime   @default(now())
+  id              String     @id @default(uuid()) @db.Uuid
+  email           String     @unique
+  full_name       String?
+  role            String?    @default("customer")
+  created_at      DateTime   @default(now())
+  password        String?
+  resetOtp        String?    
+  resetOtpExpiry  DateTime?  
 
-  // 👇 Add this relation field
-  documents   Document[]
+  documents       Document[]
 }
 
 
@@ -26,7 +28,7 @@ model Document {
   id            String   @id @default(uuid()) @db.Uuid
   userId        String   @db.Uuid
   fileUrl       String
-  cloudinaryId  String?   // 👈 new column for deletion
+  cloudinaryId  String?  
   fileName      String
   fileType      String
   fileSize      BigInt

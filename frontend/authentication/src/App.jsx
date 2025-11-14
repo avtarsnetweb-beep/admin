@@ -1,12 +1,19 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { Home } from './pages/Home';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
-import { CustomerDashboard } from './pages/CustomerDashboard';
-import { AdminDashboard } from './pages/AdminDashboard';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { Signup } from "./pages/Signup";
+import { CustomerDashboard } from "./pages/CustomerDashboard";
+import { AdminDashboard } from "./pages/AdminDashboard";
 import "./App.css";
+import ForgotPassword from "./pages/ForgotPassword";
+import AuthCallback from "./pages/AuthCallback";
 
 // Dashboard router component
 function DashboardRouter() {
@@ -23,7 +30,7 @@ function DashboardRouter() {
     );
   }
 
-  if (profile?.role === 'admin') {
+  if (profile?.role === "admin") {
     return <AdminDashboard />;
   }
 
@@ -38,6 +45,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/forgot" element={<ForgotPassword />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
 
           <Route
             path="/dashboard"
@@ -51,9 +60,9 @@ function App() {
           <Route
             path="/admin"
             element={
-               <ProtectedRoute requireAdmin={true}>
+              <ProtectedRoute requireAdmin={true}>
                 <AdminDashboard />
-               </ProtectedRoute> 
+              </ProtectedRoute>
             }
           />
 

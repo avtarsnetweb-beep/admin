@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const prisma = require('../config/prisma');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 /**
  * GET /admin/documents - Get all documents (admin only)
@@ -84,5 +86,8 @@ router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 });
+
+
+
 
 module.exports = router;
