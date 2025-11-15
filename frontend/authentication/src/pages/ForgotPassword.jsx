@@ -13,46 +13,44 @@ export default function ForgotPassword() {
 
   const navigate = useNavigate();
 
-  const handleSendOtp = async () => {
-       const res = await apiRequest('/api/auth/forgot-password',
-    // const res = await fetch("http://localhost:3000/api/auth/forgot-password", 
-    {
+const handleSendOtp = async () => {
+  try {
+    const data = await apiRequest('/api/auth/forgot-password', {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("OTP sent to your email!");
-      setGeneratedOtp(data.otp); // remove this in production
-      setStep(2);
-    } else {
-      alert(data.error);
-    }
-  };
+    // data is already parsed JSON from apiRequest()
+    alert("OTP sent to your email!");
+    setGeneratedOtp(data.otp); 
+    setStep(2);
 
-  const handleResetPassword = async () => {
-    if (newPwd !== confirmPwd) {
-      alert("Passwords do not match!");
-      return;
-    }
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
-        const res = await apiRequest('/api/auth/reset-password',{
-    // const res = await fetch("http://localhost:3000/api/auth/reset-password", {
+
+const handleResetPassword = async () => {
+  if (newPwd !== confirmPwd) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  try {
+    const data = await apiRequest('/api/auth/reset-password', {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, otp, newPassword: newPwd }),
     });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Password Reset Successful!");
-      navigate("/auth/login");
-    } else {
-      alert(data.error);
-    }
-  };
+    alert("Password Reset Successful!");
+    navigate("/auth/login");
+
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
