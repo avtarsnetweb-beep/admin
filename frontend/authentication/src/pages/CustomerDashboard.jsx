@@ -5,6 +5,7 @@ import { apiRequest, uploadFile } from '../lib/api';
 import { Button } from '../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card';
 import { Alert, AlertDescription } from '../components/ui/Alert';
+import { errorToast, successToast } from '../lib/toast';
 
 export function CustomerDashboard() {
   const { user, profile, signOut } = useAuth();
@@ -103,15 +104,17 @@ export function CustomerDashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            // <Alert variant="destructive" className="mb-4">
+            //   <AlertDescription>{error}</AlertDescription>
+            // </Alert>
+              errorToast(error)
           )}
 
           {success && (
-            <Alert variant="success" className="mb-4">
-              <AlertDescription>{success}</AlertDescription>
-            </Alert>
+            // <Alert variant="success" className="mb-4">
+            //   <AlertDescription>{success}</AlertDescription>
+            // </Alert>
+            successToast(success)
           )}
 
           <Card className="mb-6">

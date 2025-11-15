@@ -21,8 +21,6 @@ const handleSendOtp = async () => {
       body: JSON.stringify({ email }),
     });
 
-    // data is already parsed JSON from apiRequest()
-    // alert("OTP sent to your email!");
       successToast("OTP sent to your email");
     setGeneratedOtp(data.otp); 
     setStep(2);
@@ -45,11 +43,11 @@ const handleResetPassword = async () => {
       body: JSON.stringify({ email, otp, newPassword: newPwd }),
     });
 
-    alert("Password Reset Successful!");
+    successToast("Password Reset Successful!");
     navigate("/auth/login");
 
   } catch (err) {
-    alert(err.message);
+    errorToast(err.message);
   }
 };
 
