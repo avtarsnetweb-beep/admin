@@ -14,6 +14,7 @@ import { AdminDashboard } from "./pages/AdminDashboard";
 import "./App.css";
 import ForgotPassword from "./pages/ForgotPassword";
 import AuthCallback from "./pages/AuthCallback";
+import { Toaster } from "sonner";
 
 // Dashboard router component
 function DashboardRouter() {
@@ -40,6 +41,7 @@ function DashboardRouter() {
 function App() {
   return (
     <Router>
+      <Toaster richColors position="top-center" />
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />
