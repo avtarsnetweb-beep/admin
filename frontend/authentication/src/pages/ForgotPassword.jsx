@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../lib/api";
+import { errorToast, successToast } from "../lib/toast";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -21,12 +22,13 @@ const handleSendOtp = async () => {
     });
 
     // data is already parsed JSON from apiRequest()
-    alert("OTP sent to your email!");
+    // alert("OTP sent to your email!");
+      successToast("OTP sent to your email");
     setGeneratedOtp(data.otp); 
     setStep(2);
 
   } catch (err) {
-    alert(err.message);
+    errorToast(err.message);
   }
 };
 
