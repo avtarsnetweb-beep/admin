@@ -55,62 +55,62 @@ export async function uploadFile(endpoint, file) {
 }
 
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-/**
- * Custom error class for API errors
- */
-class APIError extends Error {
-  constructor(message, status, data) {
-    super(message);
-    this.name = "APIError";
-    this.status = status;
-    this.data = data;
-  }
-}
+// /**
+//  * Custom error class for API errors
+//  */
+// class APIError extends Error {
+//   constructor(message, status, data) {
+//     super(message);
+//     this.name = "APIError";
+//     this.status = status;
+//     this.data = data;
+//   }
+// }
 
-/**
- * Get auth token from storage
- */
-function getAuthToken() {
-  return localStorage.getItem("access_token");
-}
+// /**
+//  * Get auth token from storage
+//  */
+// function getAuthToken() {
+//   return localStorage.getItem("access_token");
+// }
 
-/**
- * Handle API response and errors
- */
-async function handleResponse(response) {
-  let data;
-  const contentType = response.headers.get("content-type");
+// /**
+//  * Handle API response and errors
+//  */
+// async function handleResponse(response) {
+//   let data;
+//   const contentType = response.headers.get("content-type");
   
-  // Parse response based on content type
-  if (contentType?.includes("application/json")) {
-    data = await response.json();
-  } else {
-    data = await response.text();
-  }
+//   // Parse response based on content type
+//   if (contentType?.includes("application/json")) {
+//     data = await response.json();
+//   } else {
+//     data = await response.text();
+//   }
 
-  // Handle non-OK responses
-  if (!response.ok) {
-    // Handle 401 Unauthorized - token expired or invalid
-    if (response.status === 401) {
-      localStorage.removeItem("access_token");
-      window.location.href = "/auth/login";
-      throw new APIError("Session expired. Please log in again.", 401, data);
-    }
+//   // Handle non-OK responses
+//   if (!response.ok) {
+//     // Handle 401 Unauthorized - token expired or invalid
+//     if (response.status === 401) {
+//       localStorage.removeItem("access_token");
+//       window.location.href = "/auth/login";
+//       throw new APIError("Session expired. Please log in again.", 401, data);
+//     }
 
-    // Extract error message
-    const errorMessage =
-      data?.error ||
-      data?.message ||
-      (typeof data === "string" ? data : null) ||
-      `Request failed with status ${response.status}`;
+//     // Extract error message
+//     const errorMessage =
+//       data?.error ||
+//       data?.message ||
+//       (typeof data === "string" ? data : null) ||
+//       `Request failed with status ${response.status}`;
 
-    throw new APIError(errorMessage, response.status, data);
-  }
+//     throw new APIError(errorMessage, response.status, data);
+//   }
 
-  return data;
-}
+//   return data;
+// }
 
 // /**
 //  * Make an authenticated API request
