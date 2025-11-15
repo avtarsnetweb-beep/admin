@@ -6,11 +6,6 @@ const cors = require("cors");
 
 const app = express();
 
-// Import routes
-const authRoutes = require("./routes/auth.js");
-const documentRoutes = require("./routes/documents");
-const adminRoutes = require("./routes/admin");
-
 // CORS options
 const corsOptions = {
   origin: [
@@ -18,15 +13,12 @@ const corsOptions = {
     "https://auth-project-avtar.netlify.app"
   ],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 };
 
 // Apply CORS
 app.use(cors(corsOptions));
-
-// Fix Express 5 OPTIONS issue
-app.options("/*", cors(corsOptions));
 
 // Body parsing
 app.use(express.json());
@@ -42,16 +34,16 @@ app.get("/", (req, res) => {
 });
 
 // API Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/documents", documentRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/auth", require("./routes/auth.js"));
+app.use("/api/documents", require("./routes/documents"));
+app.use("/api/admin", require("./routes/admin"));
 
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-// Global error handler
+// Error handler
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
   res.status(500).json({
