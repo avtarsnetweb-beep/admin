@@ -11,21 +11,18 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://auth-project-avtar.netlify.app",
-   " https://stalwart-praline-bbbe6d.netlify.app"
+    "https://stalwart-praline-bbbe6d.netlify.app",
   ],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// Apply CORS
 app.use(cors(corsOptions));
 
-// Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check
 app.get("/", (req, res) => {
   res.json({
     message: "Auth API Server",
