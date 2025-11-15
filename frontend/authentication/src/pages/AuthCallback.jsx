@@ -7,7 +7,9 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (session) {
         localStorage.setItem("access_token", session.access_token);

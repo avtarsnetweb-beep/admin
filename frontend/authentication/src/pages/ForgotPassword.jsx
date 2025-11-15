@@ -14,43 +14,39 @@ export default function ForgotPassword() {
 
   const navigate = useNavigate();
 
-const handleSendOtp = async () => {
-  try {
-    const data = await apiRequest('/api/auth/forgot-password', {
-      method: "POST",
-      body: JSON.stringify({ email }),
-    });
+  const handleSendOtp = async () => {
+    try {
+      const data = await apiRequest("/api/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
 
       successToast("OTP sent to your email");
-    setGeneratedOtp(data.otp); 
-    setStep(2);
+      setGeneratedOtp(data.otp);
+      setStep(2);
+    } catch (err) {
+      errorToast(err.message);
+    }
+  };
 
-  } catch (err) {
-    errorToast(err.message);
-  }
-};
+  const handleResetPassword = async () => {
+    if (newPwd !== confirmPwd) {
+      errorToast("Passwords do not match!");
+      return;
+    }
 
+    try {
+      const data = await apiRequest("/api/auth/reset-password", {
+        method: "POST",
+        body: JSON.stringify({ email, otp, newPassword: newPwd }),
+      });
 
-const handleResetPassword = async () => {
-  if (newPwd !== confirmPwd) {
-    alert("Passwords do not match!");
-    return;
-  }
-
-  try {
-    const data = await apiRequest('/api/auth/reset-password', {
-      method: "POST",
-      body: JSON.stringify({ email, otp, newPassword: newPwd }),
-    });
-
-    successToast("Password Reset Successful!");
-    navigate("/auth/login");
-
-  } catch (err) {
-    errorToast(err.message);
-  }
-};
-
+      successToast("Password Reset Successful!");
+      navigate("/auth/login");
+    } catch (err) {
+      errorToast(err.message);
+    }
+  };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">

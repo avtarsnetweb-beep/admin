@@ -1,26 +1,26 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 /**
  * Make an authenticated API request
  */
 export async function apiRequest(endpoint, options = {}) {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem("access_token");
 
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
-    ...options.headers
+    ...options.headers,
   };
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
-    headers
+    headers,
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || 'API request failed');
+    throw new Error(data.error || "API request failed");
   }
 
   return data;
@@ -30,25 +30,25 @@ export async function apiRequest(endpoint, options = {}) {
  * Upload a file with authentication
  */
 export async function uploadFile(endpoint, file) {
-  const token = localStorage.getItem('access_token');
- console.log("file",endpoint,file);
+  const token = localStorage.getItem("access_token");
+  console.log("file", endpoint, file);
   const formData = new FormData();
-  formData.append('document', file);
+  formData.append("document", file);
 
   const response = await fetch(`${API_URL}${endpoint}`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      ...(token && { Authorization: `Bearer ${token}` })
+      ...(token && { Authorization: `Bearer ${token}` }),
     },
-    body: formData
+    body: formData,
   });
 
   const data = await response.json();
 
-  console.log("data",data);
-  
+  console.log("data", data);
+
   if (!response.ok) {
-    throw new Error(data.error || 'File upload failed');
+    throw new Error(data.error || "File upload failed");
   }
 
   return data;

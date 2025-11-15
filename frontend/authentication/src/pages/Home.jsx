@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { Button } from '../components/ui/Button';
+import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { Button } from "../components/ui/Button";
 
 export function Home() {
   const { user, profile } = useAuth();
@@ -37,7 +37,8 @@ export function Home() {
             Full-Stack Authentication System
           </h1>
           <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500">
-            A production-ready authentication and role-based access control system built with React, Express, and Supabase.
+            A production-ready authentication and role-based access control
+            system built with React, Express, and Supabase.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             {!user && (
@@ -46,7 +47,9 @@ export function Home() {
                   <Button size="lg">Get Started</Button>
                 </Link>
                 <Link to="/auth/login">
-                  <Button size="lg" variant="outline">Sign In</Button>
+                  <Button size="lg" variant="outline">
+                    Sign In
+                  </Button>
                 </Link>
               </>
             )}
@@ -57,20 +60,28 @@ export function Home() {
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="text-blue-600 text-3xl mb-4">🔐</div>
-              <h3 className="text-lg font-semibold mb-2">Secure Authentication</h3>
-              <p className="text-gray-600">Email/password and Google OAuth login with email verification</p>
+              <h3 className="text-lg font-semibold mb-2">
+                Secure Authentication
+              </h3>
+              <p className="text-gray-600">
+                Email/password and Google OAuth login with email verification
+              </p>
             </div>
 
             <div className="bg-white rounded-lg shadow p-6">
               <div className="text-blue-600 text-3xl mb-4">👥</div>
               <h3 className="text-lg font-semibold mb-2">Role-Based Access</h3>
-              <p className="text-gray-600">Admin and Customer roles with protected routes and permissions</p>
+              <p className="text-gray-600">
+                Admin and Customer roles with protected routes and permissions
+              </p>
             </div>
 
             <div className="bg-white rounded-lg shadow p-6">
               <div className="text-blue-600 text-3xl mb-4">📄</div>
               <h3 className="text-lg font-semibold mb-2">Document Upload</h3>
-              <p className="text-gray-600">Secure document storage with Cloudinary integration</p>
+              <p className="text-gray-600">
+                Secure document storage with Cloudinary integration
+              </p>
             </div>
           </div>
         </div>

@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { apiRequest } from '../lib/api';
-import { Button } from '../components/ui/Button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/Card';
-import { Alert, AlertDescription } from '../components/ui/Alert';
-import { errorToast, successToast } from '../lib/toast';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { apiRequest } from "../lib/api";
+import { Button } from "../components/ui/Button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../components/ui/Card";
+import { Alert, AlertDescription } from "../components/ui/Alert";
+import { errorToast, successToast } from "../lib/toast";
 
 export function AdminDashboard() {
   const { profile, signOut } = useAuth();
@@ -13,9 +19,9 @@ export function AdminDashboard() {
   const [documents, setDocuments] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [activeTab, setActiveTab] = useState('documents');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [activeTab, setActiveTab] = useState("documents");
 
   useEffect(() => {
     loadData();
@@ -24,15 +30,15 @@ export function AdminDashboard() {
   const loadData = async () => {
     try {
       setLoading(true);
-      if (activeTab === 'documents') {
-        const data = await apiRequest('/api/admin/documents');
+      if (activeTab === "documents") {
+        const data = await apiRequest("/api/admin/documents");
         setDocuments(data);
       } else {
-        const data = await apiRequest('/api/admin/users');
+        const data = await apiRequest("/api/admin/users");
         setUsers(data);
       }
     } catch (err) {
-      setError(err.message || 'Failed to load data');
+      setError(err.message || "Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -40,26 +46,38 @@ export function AdminDashboard() {
 
   const updateDocumentStatus = async (id, status) => {
     try {
-      setError('');
+      setError("");
       await apiRequest(`/api/admin/documents/${id}/status`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status })
+        method: "PATCH",
+        body: JSON.stringify({ status }),
       });
       setSuccess(`Document status updated to ${status}`);
       loadData();
     } catch (err) {
-      setError(err.message || 'Failed to update document status');
+      setError(err.message || "Failed to update document status");
     }
   };
 
   const handleLogout = async () => {
     try {
       await signOut();
-      navigate('/auth/login');
+      navigate("/auth/login");
     } catch (err) {
-      setError(err.message || 'Failed to sign out');
+      setError(err.message || "Failed to sign out");
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      errorToast(error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      successToast(success);
+    }
+  }, [success]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,7 +85,9 @@ export function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Admin Dashboard
+              </h1>
               <p className="text-sm text-gray-600">{profile?.email}</p>
             </div>
             <Button onClick={handleLogout} variant="outline">
@@ -79,38 +99,24 @@ export function AdminDashboard() {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          {error && (
-            // <Alert variant="destructive" className="mb-4">
-            //   <AlertDescription>{error}</AlertDescription>
-            // </Alert>
-            errorToast(error)
-          )}
-
-          {success && (
-            // <Alert variant="success" className="mb-4">
-            //   <AlertDescription>{success}</AlertDescription>
-            // </Alert>
-            successToast(success)
-          )}
-
           <div className="mb-6 border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
               <button
-                onClick={() => setActiveTab('documents')}
+                onClick={() => setActiveTab("documents")}
                 className={`${
-                  activeTab === 'documents'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "documents"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Documents
               </button>
               <button
-                onClick={() => setActiveTab('users')}
+                onClick={() => setActiveTab("users")}
                 className={`${
-                  activeTab === 'users'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === "users"
+                    ? "border-blue-500 text-blue-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Users
@@ -118,11 +124,13 @@ export function AdminDashboard() {
             </nav>
           </div>
 
-          {activeTab === 'documents' && (
+          {activeTab === "documents" && (
             <Card>
               <CardHeader>
                 <CardTitle>All Documents</CardTitle>
-                <CardDescription>View and manage all uploaded documents</CardDescription>
+                <CardDescription>
+                  View and manage all uploaded documents
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {loading ? (
@@ -158,8 +166,12 @@ export function AdminDashboard() {
                         {documents.map((doc) => (
                           <tr key={doc.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{doc.user.full_name || 'N/A'}</div>
-                              <div className="text-sm text-gray-500">{doc.user.email}</div>
+                              <div className="text-sm text-gray-900">
+                                {doc.user.full_name || "N/A"}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {doc.user.email}
+                              </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                               {doc.fileName}
@@ -168,11 +180,15 @@ export function AdminDashboard() {
                               {doc.fileType}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                doc.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                doc.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                                'bg-yellow-100 text-yellow-800'
-                              }`}>
+                              <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                  doc.status === "approved"
+                                    ? "bg-green-100 text-green-800"
+                                    : doc.status === "rejected"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}
+                              >
                                 {doc.status}
                               </span>
                             </td>
@@ -188,16 +204,20 @@ export function AdminDashboard() {
                               >
                                 View
                               </a>
-                              {doc.status === 'pending' && (
+                              {doc.status === "pending" && (
                                 <>
                                   <button
-                                    onClick={() => updateDocumentStatus(doc.id, 'approved')}
+                                    onClick={() =>
+                                      updateDocumentStatus(doc.id, "approved")
+                                    }
                                     className="text-green-600 hover:text-green-900"
                                   >
                                     Approve
                                   </button>
                                   <button
-                                    onClick={() => updateDocumentStatus(doc.id, 'rejected')}
+                                    onClick={() =>
+                                      updateDocumentStatus(doc.id, "rejected")
+                                    }
                                     className="text-red-600 hover:text-red-900"
                                   >
                                     Reject
@@ -215,7 +235,7 @@ export function AdminDashboard() {
             </Card>
           )}
 
-          {activeTab === 'users' && (
+          {activeTab === "users" && (
             <Card>
               <CardHeader>
                 <CardTitle>All Users</CardTitle>
@@ -252,15 +272,19 @@ export function AdminDashboard() {
                         {users.map((user) => (
                           <tr key={user.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {user.full_name || 'N/A'}
+                              {user.full_name || "N/A"}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                               {user.email}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'
-                              }`}>
+                              <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                  user.role === "admin"
+                                    ? "bg-purple-100 text-purple-800"
+                                    : "bg-gray-100 text-gray-800"
+                                }`}
+                              >
                                 {user.role}
                               </span>
                             </td>
@@ -268,7 +292,7 @@ export function AdminDashboard() {
                               {user._count?.documents || 0}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(user.created_at).toLocaleString()}
+                              {new Date(user.created_at).toLocaleString()}
                             </td>
                           </tr>
                         ))}
