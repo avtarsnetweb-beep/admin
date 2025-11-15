@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../lib/api";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,9 @@ export default function ForgotPassword() {
   const navigate = useNavigate();
 
   const handleSendOtp = async () => {
-    const res = await fetch("http://localhost:3000/api/auth/forgot-password", {
+       const res = await apiRequest('/api/auth/forgot-password',
+    // const res = await fetch("http://localhost:3000/api/auth/forgot-password", 
+    {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -35,7 +38,8 @@ export default function ForgotPassword() {
       return;
     }
 
-    const res = await fetch("http://localhost:3000/api/auth/reset-password", {
+        const res = await apiRequest('/api/auth/reset-password',{
+    // const res = await fetch("http://localhost:3000/api/auth/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, otp, newPassword: newPwd }),
