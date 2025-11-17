@@ -1,16 +1,14 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { apiRequest } from '../lib/api';
-import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+import { apiRequest } from "../lib/api";
 
 const AuthContext = createContext({});
 
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(null);
+  const [user, setUser] = useState(null); // Supabase user object
+  const [profile, setProfile] = useState(null); // Your backend profile
+  const [loading, setLoading] = useState(true); // loading indicator
+  const [session, setSession] = useState(null); // full supabase session
 
   useEffect(() => {
     // Get initial session
@@ -19,42 +17,66 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null);
 
       if (session?.access_token) {
-        localStorage.setItem('access_token', session.access_token);
+        localStorage.setItem("access_token", session.access_token);
         loadProfile();
       } else {
         setLoading(false);
       }
     });
 
-
     // Listen for auth changes
+    //   const {
+    //     data: { subscription },
+    //   } = supabase.auth.onAuthStateChange((_event, session) => {
+    //     setSession(session);
+    //     setUser(session?.user ?? null);
+
+    //     if (session?.access_token) {
+    //       localStorage.setItem("access_token", session.access_token);
+    //       loadProfile();
+    //     } else {
+    //       localStorage.removeItem("access_token");
+    //       setProfile(null);
+    //       setLoading(false);
+    //     }
+    //   });
+
     const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth event:", event);
+
       setSession(session);
       setUser(session?.user ?? null);
 
       if (session?.access_token) {
-        localStorage.setItem('access_token', session.access_token);
-        loadProfile();
+        localStorage.setItem("access_token", session.access_token);
+
+        try {
+          await loadProfile();
+        } catch {
+          console.warn("Invalid session — logging out");
+          await supabase.auth.signOut();
+          localStorage.removeItem("access_token");
+          setProfile(null);
+        }
       } else {
-        localStorage.removeItem('access_token');
+        localStorage.removeItem("access_token");
         setProfile(null);
         setLoading(false);
       }
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
   const loadProfile = async () => {
     try {
-      const profileData = await apiRequest('/api/auth/profile');
-      console.log("profiledata",profileData);
-      
+      const profileData = await apiRequest("/api/auth/profile");
+      console.log("profiledata", profileData);
+
       setProfile(profileData);
     } catch (error) {
-      console.error('Failed to load profile:', error);
+      console.error("Failed to load profile:", error);
     } finally {
       setLoading(false);
     }
@@ -66,9 +88,9 @@ export function AuthProvider({ children }) {
       password,
       options: {
         data: {
-          full_name: fullName
-        }
-      }
+          full_name: fullName,
+        },
+      },
     });
 
     if (error) throw error;
@@ -76,12 +98,12 @@ export function AuthProvider({ children }) {
     // Create profile in backend
     if (data.user && data.session) {
       try {
-        await apiRequest('/api/auth/create-profile', {
-          method: 'POST',
-          body: JSON.stringify({ fullName })
+        await apiRequest("/api/auth/create-profile", {
+          method: "POST",
+          body: JSON.stringify({ fullName }),
         });
       } catch (err) {
-        console.error('Failed to create profile:', err);
+        console.error("Failed to create profile:", err);
       }
     }
 
@@ -91,7 +113,7 @@ export function AuthProvider({ children }) {
   const signIn = async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
 
     if (error) throw error;
@@ -100,28 +122,42 @@ export function AuthProvider({ children }) {
 
   const signInWithGoogle = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
     if (error) throw error;
     return data;
   };
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+  // const signOut = async () => {
+  //   const { error } = await supabase.auth.signOut();
+  //   if (error) throw error;
 
-    localStorage.removeItem('access_token');
+  //   localStorage.removeItem("access_token");
+  //   setUser(null);
+  //   setProfile(null);
+  // };
+
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.warn("SignOut failed (likely expired session). Forcing logout.");
+    }
+
+    localStorage.removeItem("access_token");
     setUser(null);
     setProfile(null);
+    setSession(null);
+    setLoading(false);
   };
 
   const resetPassword = async (email) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`
+      redirectTo: `${window.location.origin}/auth/reset-password`,
     });
 
     if (error) throw error;
@@ -129,7 +165,7 @@ export function AuthProvider({ children }) {
 
   const updatePassword = async (newPassword) => {
     const { error } = await supabase.auth.updateUser({
-      password: newPassword
+      password: newPassword,
     });
 
     if (error) throw error;
@@ -146,23 +182,17 @@ export function AuthProvider({ children }) {
     signOut,
     resetPassword,
     updatePassword,
-    isAdmin: profile?.role === 'admin',
-    isCustomer: profile?.role === 'customer'
+    isAdmin: profile?.role === "admin",
+    isCustomer: profile?.role === "customer",
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
-
