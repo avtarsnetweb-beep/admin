@@ -1,4 +1,3 @@
-
 const express = require("express");
 const router = express.Router();
 const prisma = require("../config/prisma");
@@ -27,7 +26,7 @@ router.post(
         const uploadStream = cloudinary.uploader.upload_stream(
           {
             folder: "auth-documents",
-            resource_type: "auto",
+            resource_type: "raw",
             public_id: `${req.user.id}_${Date.now()}`,
           },
           (error, result) => {
@@ -101,15 +100,10 @@ router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
 
-    console.log("🔍 Delete request - Document ID:", id);
-    console.log("🔍 Delete request - User ID:", req.user.id);
-
     // Find document and verify ownership
     const document = await prisma.document.findUnique({
       where: { id },
     });
-
-    console.log("📄 Found document:", document);
 
     if (!document) {
       return res.status(404).json({ error: "Document not found" });
@@ -119,19 +113,11 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     const documentUserId = String(document.userId);
     const requestUserId = String(req.user.id);
 
-    console.log("🔍 Comparing - Document userId:", documentUserId);
-    console.log("🔍 Comparing - Request userId:", requestUserId);
-
     if (documentUserId !== requestUserId) {
-      console.log("🚫 Unauthorized delete attempt");
-      console.log("🚫 Document belongs to:", documentUserId);
-      console.log("🚫 Request from:", requestUserId);
       return res
         .status(403)
         .json({ error: "Unauthorized to delete this document" });
     }
-
-    console.log("✅ Authorization passed, deleting from Cloudinary...");
 
     // Delete from Cloudinary using stored public_id
     if (document.cloudinaryId) {
@@ -160,15 +146,15 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     res.json({ message: "Document deleted successfully" });
   } catch (error) {
     console.error("🔥 Delete document error:", error);
-    
+
     // Better error handling
-    if (error.code === 'P2025') {
+    if (error.code === "P2025") {
       return res.status(404).json({ error: "Document not found" });
     }
-    
-    res.status(500).json({ 
-      error: "Failed to delete document", 
-      details: error.message 
+
+    res.status(500).json({
+      error: "Failed to delete document",
+      details: error.message,
     });
   }
 });
